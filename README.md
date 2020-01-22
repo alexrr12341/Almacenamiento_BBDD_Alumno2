@@ -41,7 +41,37 @@ SYSTEM			       LOCAL
 
 ### 2. Crea dos tablas en el tablespace recién creado e inserta un registro en cada una de ellas. Comprueba el espacio libre existente en el tablespace. Borra una de las tablas y comprueba si ha aumentado el espacio disponible en el tablespace. Explica la razón.
 
-       
+Primero vamos a poner el tablespace online
+```
+alter tablespace TS1 online;
+```
+Vamos a observar cual es el espacio libre del tablespace ahora que esta vacio.
+![](/Tablespace1.png)
+
+Ahora vamos a crear las dos tablas en el tablespace TS1
+```
+Create table Pruebin
+(
+	Prueba varchar2(20)
+)
+tablespace TS1;
+
+Create table Pruebin2
+(
+	Prueba2 varchar2(20)
+)
+tablespace TS1;
+```
+
+Y vamos a insertar los datos en las dos tablas
+
+```
+insert into Pruebin values('Esto es una prueba');
+insert into Pruebin2 values('Bytes se consumen');
+```
+
+Vamos a ver de vuelta 
+
 ### 3. Convierte a TS1 en un tablespace de sólo lectura. Intenta insertar registros en la tabla existente. ¿Qué ocurre?. Intenta ahora borrar la tabla. ¿Qué ocurre? ¿Porqué crees que pasa eso?
        
 ### 4. Crea un espacio de tablas TS2 con dos ficheros en rutas diferentes de 1M cada uno no autoextensibles. Crea en el citado tablespace una tabla con la clausula de almacenamiento que quieras. Inserta registros hasta que se llene el tablespace. ¿Qué ocurre?
