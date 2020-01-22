@@ -71,7 +71,14 @@ insert into Pruebin2 values('Bytes se consumen');
 ```
 
 Vamos a ver de vuelta si ha cambiado el espacio libre
-![](/Tablespace2.png) 
+![](/Tablespace2.png)
+
+Vamos a borrar la tabla Pruebin y miraremos de vuelta a ver que ocurre
+```
+drop table Pruebin;
+```
+
+![](/Tablespace3.png)
 
 ### 3. Convierte a TS1 en un tablespace de sólo lectura. Intenta insertar registros en la tabla existente. ¿Qué ocurre?. Intenta ahora borrar la tabla. ¿Qué ocurre? ¿Porqué crees que pasa eso?
        
