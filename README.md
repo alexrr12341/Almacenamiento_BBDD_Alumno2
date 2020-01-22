@@ -80,6 +80,8 @@ drop table Pruebin;
 
 ![](/Tablespace3.png)
 
+Como podemos observar, se ha añadido una nueva línea de 65536 bytes, esto se debe a que en Oracle, los tablespaces se dividen en segmentos,cada segmento es un objeto del tablespace,por lo que esos bytes son los que se han liberado tras el drop de la tabla Pruebin.
+
 ### 3. Convierte a TS1 en un tablespace de sólo lectura. Intenta insertar registros en la tabla existente. ¿Qué ocurre?. Intenta ahora borrar la tabla. ¿Qué ocurre? ¿Porqué crees que pasa eso?
        
 ### 4. Crea un espacio de tablas TS2 con dos ficheros en rutas diferentes de 1M cada uno no autoextensibles. Crea en el citado tablespace una tabla con la clausula de almacenamiento que quieras. Inserta registros hasta que se llene el tablespace. ¿Qué ocurre?
