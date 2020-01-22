@@ -102,6 +102,39 @@ Esto es debido a que realmente un drop no está modificando la información, la 
        
 ### 4. Crea un espacio de tablas TS2 con dos ficheros en rutas diferentes de 1M cada uno no autoextensibles. Crea en el citado tablespace una tabla con la clausula de almacenamiento que quieras. Inserta registros hasta que se llene el tablespace. ¿Qué ocurre?
 
+Vamos a crear el tablespace con los dos ficheros y no autoextensibles
+```
+Create tablespace TS2
+Datafile '/home/oracle/TS2.dbf'
+size 1M,
+'/home/oracle/TS2-2.dbf'
+size 1M
+autoextend off;
+```
+
+Vamos ahora a crear una tabla con una clausula de almacenamiento por ejemplo una de Initial.
+```
+Create table Pruebon
+(
+	Prueba char(2000),
+	Prueba2 char(2000),
+	Prueba3 char(2000)
+)
+Storage
+(
+	Initial 10K
+)
+tablespace TS2;
+```
+
+En este caso usaremos el tipo de datos char ya que será el mas rápido para ocupar bytes, ya que siempre intentará rellenar todos los valores restantes
+
+Ahora vamos a insertar varios datos hasta que superen los 2M.
+
+![](/Tablespace6.png)
+
+Cuando llega al límite de espacio, intenta extender el tablespace, pero como hemos deshabilitado esa opción, no nos deja insertar mas datos en el tablespace.
+
 ### 5. Hacer un procedimiento llamado MostrarUsuariosporTablespace que muestre por pantalla un listado de los tablespaces existentes con la lista de usuarios que tienen asignado cada uno de ellos por defecto y el número de los mismos, así:
 ```
 Tablespace xxxx:
