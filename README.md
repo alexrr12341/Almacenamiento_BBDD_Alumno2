@@ -95,6 +95,7 @@ Ahora vamos a intentar insertar un registro en la tabla Pruebin2
 Obviamente, no nos deja ya que una inserción de datos sería una escritura sobre el tablespace TS1.
 
 Ahora vamos a intentar borrar la tabla Pruebin2.
+
 ![](/Tablespace5.png)
 
 Esto es debido a que realmente un drop no está modificando la información, la está moviendo a la Recycle Bin para luego borrarla allí, por lo que el tablespace no está haciendo nada realmente.
