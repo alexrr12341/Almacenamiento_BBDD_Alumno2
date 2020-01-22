@@ -1,6 +1,6 @@
-Alumno 2:
+# Alumno 2:
 
-ORACLE:
+## ORACLE:
 
 ### 1. Establece que los objetos que se creen en el TS1 (creado por Alumno 1) tengan un tamaño inicial de 200K, y que cada extensión sea del doble del tamaño que la anterior. El número máximo de extensiones debe ser de 3.
 Vamos ahora a crear que tenga sus objetos un tamaño inicial de 200K, primero lo apagamos para operar con él.
@@ -145,14 +145,14 @@ end;
 /
 ```
        
-Postgres:
+## Postgres:
        
 ### 7. Averigua si existe el concepto de segmento y el de extensión en Postgres, en qué consiste y las diferencias con los conceptos correspondientes de ORACLE.
        
-MySQL:
+## MySQL:
 
 ### 8. Averigua si existe el concepto de espacio de tablas en MySQL y las diferencias con los tablespaces de ORACLE.
 
-MongoDB:
+## MongoDB:
 
 ### 9. Averigua si existe la posibilidad en MongoDB de decidir en qué archivo se almacena una colección.
