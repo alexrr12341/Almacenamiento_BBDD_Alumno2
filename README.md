@@ -2,38 +2,40 @@ Alumno 2:
 
 ORACLE:
 
-    1. Establece que los objetos que se creen en el TS1 (creado por Alumno 1) tengan un tamaño inicial de 200K, y que cada extensión sea del doble del tamaño que la anterior. El número máximo de extensiones debe ser de 3.
+### 1. Establece que los objetos que se creen en el TS1 (creado por Alumno 1) tengan un tamaño inicial de 200K, y que cada extensión sea del doble del tamaño que la anterior. El número máximo de extensiones debe ser de 3.
+Vamos ahora a crear que tenga sus objetos un tamaño inicial de 200K, primero lo apagamos para operar con él.
 
+```
+Alter tablespace TS1 offline;
+```
 
-	Vamos ahora a crear que tenga sus objetos un tamaño inicial de 200K, primero lo apagamos para operar con él.
-	```
-	Alter tablespace TS1 offline;
-	ALTER TABLESPACE TS1
-	DEFAULT STORAGE (
-	INITIAL 200K
-	NEXT 400K
-	PCTINCREASE 100
-	MINEXTENTS 1
-	MAXEXTENTS 3);
+```
+ALTER TABLESPACE TS1
+DEFAULT STORAGE (
+INITIAL 200K
+NEXT 400K
+PCTINCREASE 100
+MINEXTENTS 1
+MAXEXTENTS 3);
 
-	ALTER TABLESPACE TS1
-	*
-	ERROR en línea 1:
-	ORA-25143: la cláusula de almacenamiento por defecto no es compatible con la
-	política de asignación
-	```
+ALTER TABLESPACE TS1
+*
+ERROR en línea 1:
+ORA-25143: la cláusula de almacenamiento por defecto no es compatible con la
+política de asignación
+```
 
-	A la hora de hacer el alter table nos salta un error debido a que el tablespace está por defecto hecho en local, no por diccionario, por lo que no podemos modificar las clausulas de almacenamiento.
-	Podemos observar que el tablespace system efectivamente está guardado en local.
+A la hora de hacer el alter table nos salta un error debido a que el tablespace está por defecto hecho en local, no por diccionario, por lo que no podemos modificar las clausulas de almacenamiento.
+Podemos observar que el tablespace system efectivamente está guardado en local.
 
-	```
-	SQL> SELECT tablespace_name, extent_management FROM dba_tablespaces where tablespace_name='SYSTEM';
+```
+SQL> SELECT tablespace_name, extent_management FROM dba_tablespaces where tablespace_name='SYSTEM';
 
-	TABLESPACE_NAME 	       EXTENT_MAN
-	------------------------------ ----------
-	SYSTEM			       LOCAL
-	
-	```
+TABLESPACE_NAME 	       EXTENT_MAN
+------------------------------ ----------
+SYSTEM			       LOCAL
+
+```
 
 	
 
