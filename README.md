@@ -98,7 +98,7 @@ Ahora vamos a intentar borrar la tabla Pruebin2.
 
 ![](/Tablespace5.png)
 
-Esto es debido a que realmente un drop no está modificando la información, la está moviendo a la Recycle Bin para luego borrarla allí, por lo que el tablespace no está haciendo nada realmente.
+Esto es debido a que envia la información al diccionario de datos, y dicho tablespace que lo gestiona si tiene permisos de escritura, por lo que permite el borrado de la tabla.
        
 ### 4. Crea un espacio de tablas TS2 con dos ficheros en rutas diferentes de 1M cada uno no autoextensibles. Crea en el citado tablespace una tabla con la clausula de almacenamiento que quieras. Inserta registros hasta que se llene el tablespace. ¿Qué ocurre?
 
@@ -200,26 +200,50 @@ end;
 ### 6. Realiza un procedimiento llamado MostrarDetallesIndices que reciba el nombre de una tabla y muestre los detalles sobre los índices que hay definidos sobre las columnas de la misma.
 
 ```	
-Create or replace procedure BuscarTabla(p_tabla varchar2)
+Create or replace procedure BuscarPropiedadesIndice(p_indice varchar2)
 is
-	v_cuenta number: =0;
-begin
-	Select count(*) into v_cuenta
+	cursor c_indicesinfo is
+	Select INDEX_TYPE,TABLESPACE_NAME,UNIQUENESS,NUM_ROWS
 	from dba_indexes
-	where table_name=p_tabla;
-	if v_cuenta = 0 then
-		raise_application_error(-20001,'Esa tabla no existe');
-	end if;
+	where index_name=p_indice;
+begin
+	for v_indicesinfo in c_indicesinfo loop
+		dbms_output.put_line('Tablespace: '||v_indicesinfo.TABLESPACE_NAME);
+		dbms_output.put_line('Tipo de indice: '||v_indicesinfo.INDEX_TYPE);
+		if v_indicesinfo.UNIQUENESS='UNIQUE' then
+			dbms_output.put_line('Es un índice único');
+		else
+			dbms_output.put_line('No es un índice único');
+		end if;
+		dbms_output.put_line('Número de filas: '||v_indicesinfo.NUM_ROWS);
+	end loop;
 end;
 /
 ```
 
 ```
+Create or replace procedure BuscarTabla(p_tabla varchar2)
+is
+	v_cuenta number(1):=0;
+begin
+	Select count(*) into v_cuenta
+	from dba_tables
+	where table_name=p_tabla;
+	if v_cuenta = 0 then
+		raise_application_error(-20001,'No existe esa tabla');
+	end if;
+end;
+/
+```
+
+dba_ind_columns
+
+```
 Create or replace procedure MostrarDetallesIndices(p_tabla varchar2)
 is
 	cursor c_indices is
-	Select INDEX_NAME,INDEX_TYPE,TABLE_OWNER
-	from dba_indexes
+	Select INDEX_NAME,TABLE_OWNER,COLUMN_NAME
+	from dba_ind_columns
 	where table_name=upper(p_tabla);
 begin
 	BuscarTabla(upper(p_tabla));
@@ -227,8 +251,10 @@ begin
 	dbms_output.put_line('-------');
 	for v_indices in c_indices loop
 		dbms_output.put_line('Nombre: '||v_indices.INDEX_NAME);
-		dbms_output.put_line('Tipo: '||v_indices.INDEX_TYPE);
 		dbms_output.put_line('Dueño: '||v_indices.TABLE_OWNER);
+		dbms_output.put_line('Columna: '||v_indices.COLUMN_NAME);
+		BuscarPropiedadesIndice(v_indices.index_name);
+		dbms_output.put_line(chr(10));
 	end loop;
 end;
 /
