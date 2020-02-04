@@ -5,11 +5,11 @@
 ### 1. Establece que los objetos que se creen en el TS1 (creado por Alumno 1) tengan un tamaño inicial de 200K, y que cada extensión sea del doble del tamaño que la anterior. El número máximo de extensiones debe ser de 3.
 Vamos ahora a crear que tenga sus objetos un tamaño inicial de 200K, primero lo apagamos para operar con él.
 
-```
+```sql
 Alter tablespace TS1 offline;
 ```
 
-```
+```sql
 ALTER TABLESPACE TS1
 DEFAULT STORAGE (
 INITIAL 200K
@@ -28,7 +28,7 @@ política de asignación
 A la hora de hacer el alter table nos salta un error debido a que el tablespace está por defecto hecho en local, no por diccionario, por lo que no podemos modificar las clausulas de almacenamiento.
 Podemos observar que el tablespace system efectivamente está guardado en local.
 
-```
+```sql
 SQL> SELECT tablespace_name, extent_management FROM dba_tablespaces where tablespace_name='SYSTEM';
 
 TABLESPACE_NAME 	       EXTENT_MAN
@@ -42,14 +42,14 @@ SYSTEM			       LOCAL
 ### 2. Crea dos tablas en el tablespace recién creado e inserta un registro en cada una de ellas. Comprueba el espacio libre existente en el tablespace. Borra una de las tablas y comprueba si ha aumentado el espacio disponible en el tablespace. Explica la razón.
 
 Primero vamos a poner el tablespace online
-```
+```sql
 alter tablespace TS1 online;
 ```
 Vamos a observar cual es el espacio libre del tablespace ahora que esta vacio.
 ![](/Tablespace1.png)
 
 Ahora vamos a crear las dos tablas en el tablespace TS1
-```
+```sql
 Create table Pruebin
 (
 	Prueba varchar2(20)
@@ -65,7 +65,7 @@ tablespace TS1;
 
 Y vamos a insertar los datos en las dos tablas
 
-```
+```sql
 insert into Pruebin values('Esto es una prueba');
 insert into Pruebin2 values('Bytes se consumen');
 ```
@@ -74,7 +74,7 @@ Vamos a ver de vuelta si ha cambiado el espacio libre
 ![](/Tablespace2.png)
 
 Vamos a borrar la tabla Pruebin y miraremos de vuelta a ver que ocurre
-```
+```sql
 drop table Pruebin;
 ```
 
@@ -85,7 +85,7 @@ Como podemos observar, se ha añadido una nueva línea de 65536 bytes, esto se d
 ### 3. Convierte a TS1 en un tablespace de sólo lectura. Intenta insertar registros en la tabla existente. ¿Qué ocurre?. Intenta ahora borrar la tabla. ¿Qué ocurre? ¿Porqué crees que pasa eso?
 
 Vamos a convertir TS1 en un tablespace de lectura con este comando
-```
+```sql
 alter tablespace TS1 read only;
 ```
 
@@ -103,7 +103,7 @@ Esto es debido a que envia la información al diccionario de datos, y dicho tabl
 ### 4. Crea un espacio de tablas TS2 con dos ficheros en rutas diferentes de 1M cada uno no autoextensibles. Crea en el citado tablespace una tabla con la clausula de almacenamiento que quieras. Inserta registros hasta que se llene el tablespace. ¿Qué ocurre?
 
 Vamos a crear el tablespace con los dos ficheros y no autoextensibles
-```
+```sql
 Create tablespace TS2
 Datafile '/home/oracle/TS2.dbf'
 size 1M,
@@ -113,7 +113,7 @@ autoextend off;
 ```
 
 Vamos ahora a crear una tabla con una clausula de almacenamiento por ejemplo una de Initial.
-```
+```sql
 Create table Pruebon
 (
 	Prueba char(2000),
