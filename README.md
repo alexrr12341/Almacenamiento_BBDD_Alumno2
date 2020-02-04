@@ -136,7 +136,7 @@ Ahora vamos a insertar varios datos hasta que superen los 2M.
 Cuando llega al límite de espacio, intenta extender el tablespace, pero como hemos deshabilitado esa opción, no nos deja insertar mas datos en el tablespace.
 
 ### 5. Hacer un procedimiento llamado MostrarUsuariosporTablespace que muestre por pantalla un listado de los tablespaces existentes con la lista de usuarios que tienen asignado cada uno de ellos por defecto y el número de los mismos, así:
-```
+```sql
 Tablespace xxxx:
 
 	Usr1
@@ -159,7 +159,7 @@ No olvides incluir los tablespaces temporales y de undo.
 
 
 
-```
+```sql
 Create or replace procedure Usuariosdeltablespace(p_tablespace varchar2,p_cuenta in out number)
 is
 	Cursor c_usuarios is
@@ -178,7 +178,7 @@ end;
 /
 ```
 
-```
+```sql
 Create or replace procedure MostrarUsuariosporTablespace
 is
 	Cursor c_tablespaces is
@@ -199,7 +199,7 @@ end;
 
 ### 6. Realiza un procedimiento llamado MostrarDetallesIndices que reciba el nombre de una tabla y muestre los detalles sobre los índices que hay definidos sobre las columnas de la misma.
 
-```	
+```sql	
 Create or replace procedure BuscarPropiedadesIndice(p_indice varchar2)
 is
 	cursor c_indicesinfo is
@@ -221,7 +221,7 @@ end;
 /
 ```
 
-```
+```sql
 Create or replace procedure BuscarTabla(p_tabla varchar2)
 is
 	v_cuenta number(1):=0;
@@ -236,9 +236,7 @@ end;
 /
 ```
 
-dba_ind_columns
-
-```
+```sql
 Create or replace procedure MostrarDetallesIndices(p_tabla varchar2)
 is
 	cursor c_indices is
@@ -264,10 +262,59 @@ end;
        
 ### 7. Averigua si existe el concepto de segmento y el de extensión en Postgres, en qué consiste y las diferencias con los conceptos correspondientes de ORACLE.
        
+En Oracle, el concepto de segmento significa que es el espacio que reserva la base de datos en su datafile para que lo utilice sólo 1 objeto. Los objetos de la base de datos es simplemente un segmento dentro del datafile.
+El uso efectivo de los segmentos requiere que el DBA conozca los objetos, que utiliza una aplicación, cómo los datos son introducidos en esos objetos y el modo en que serán recuperados.
+
+El segmento de por sí está construido por extensiones, que son conjuntos de bloques en Oracle.
+Una vez que una extensión en un segmento no puede almacenar más datos, el segmento obtendrá otra extensión.
+
+En Postgres este concepto no existe como en Oracle.
+
+Un tablespace es la asignación de un directorio, en el cual creará archivos para los segmentos. Cuando en postgres se crea un segmento, se crea un archivo de datos dentro del directorio asignado al tablespace. A este archivo no se le puede indicar el tamaño ni el nombre directamente, no es compartido por otras tablas.
+
+Y respecto a la extensión no existe tal concepto en Postgres como lo conocemos en Oracle, solo como librerías o módulos que le agregan funcionalidades específicas (Se deben instalar con create extension)
+La única referencia al sistema de almacenamiento es que la unidad mínima de almacenamiento se denomina pagina o bloque. Un bloque en postgres ocupa por defecto 8 kilobytes.
+
 ## MySQL:
 
 ### 8. Averigua si existe el concepto de espacio de tablas en MySQL y las diferencias con los tablespaces de ORACLE.
 
+MariaDB tiene varios motores de almacenamiento, entre ellos está (MYISAM,InnoDB,etc.), en este caso, el mas conocido es InnoDB. Dicho motor nos permite controlar la lógica del almacenamiento físico y acceso a los datos, por lo que podemos editar nosotros dichas clausulas.
+
+InnoDB tiene las siguientes características:
+```
+-Es transaccional
+-Tiene fácil recuperación de datos
+-Tiene rollback
+-Los datos se guardan en discos
+-Necesita bastante espacio de disco y bastante RAM
+-Tiene restricciones de Foreign Key
+```
+
+La forma de crear un tablespace por InnoDB sería:
+
+```sql
+create tablespace {Nombre tablespace}
+	add datafile '{Nombre de archivo}'
+	use logfile group logfile_group
+	[extent_size [=] extent_size]
+	[initial_size [=] initial_size]
+	[autoextend_size [=] autoextend_size]
+	[max_size [=] max_size]
+	[nodegroup [=] nodegroup_id]
+	[wait]	
+	[comment [=] comment_text]
+	[engine [=] engine_name]
+```
+
+También están los motores de almacenamiento como myISAM que se utiliza para espacios de tablas que no requieran mucho espacio de disco, ram, etc. Es en sí mas simple que el InnoDB.
+
+Y también están los motores tipo cluster como NDB.
+
+La diferencia con Oracle es que este sólo contiene un tipo de motor de almacenamiento y están pensados para una sola base de datos, al contrario que MariaDB
+
 ## MongoDB:
 
 ### 9. Averigua si existe la posibilidad en MongoDB de decidir en qué archivo se almacena una colección.
+
+En mongodb 
