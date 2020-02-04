@@ -317,4 +317,30 @@ La diferencia con Oracle es que este sólo contiene un tipo de motor de almacena
 
 ### 9. Averigua si existe la posibilidad en MongoDB de decidir en qué archivo se almacena una colección.
 
-En mongodb 
+En mongodb el almacenamiento se realiza en /var/lib/mongodb como podemos observar en el siguiente ejemplo
+```
+root@mongo:/var/lib/mongodb# ls
+collection-0-1648952780993419213.wt   collection-2--6345544394620420526.wt  index-1-6127850418206265964.wt   index-5-1648952780993419213.wt  _mdb_catalog.wt  WiredTigerLAS.wt
+collection-0-6127850418206265964.wt   collection-4-1648952780993419213.wt   index-1--6345544394620420526.wt  index-6-1648952780993419213.wt  mongod.lock      WiredTiger.lock
+collection-0--6345544394620420526.wt  collection-7-1648952780993419213.wt   index-3-1648952780993419213.wt   index-8-1648952780993419213.wt  sizeStorer.wt    WiredTiger.turtle
+collection-2-1648952780993419213.wt   diagnostic.data			    index-3-6127850418206265964.wt   index-9-1648952780993419213.wt  storage.bson     WiredTiger.wt
+collection-2-6127850418206265964.wt   index-1-1648952780993419213.wt	    index-3--6345544394620420526.wt  journal			     WiredTiger
+```
+
+Si queremos que mongo utilice un nuevo path para almacenar una coleccion en otro sitio, debemos utilizar la herramienta mongod para que apunte las colecciones en otra parte
+
+```
+root@mongo:/home/vagrant# mkdir mongo
+
+mongod --dbpath /home/vagrant/mongo --fork --logpath /home/vagrant/mongo/log
+```
+
+
+Ahora vamos a ver si se ha guardado la nueva información en la ruta
+
+```
+root@mongo:/home/vagrant/mongo# ls
+collection-0-7741059389973239158.wt  diagnostic.data		     index-5-7741059389973239158.wt  log		      mongod.lock    WiredTiger        WiredTiger.turtle
+collection-2-7741059389973239158.wt  index-1-7741059389973239158.wt  index-6-7741059389973239158.wt  log.2020-02-04T09-42-14  sizeStorer.wt  WiredTigerLAS.wt  WiredTiger.wt
+collection-4-7741059389973239158.wt  index-3-7741059389973239158.wt  journal			     _mdb_catalog.wt	      storage.bson   WiredTiger.lock
+```
